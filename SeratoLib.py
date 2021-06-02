@@ -198,12 +198,12 @@ class Crate(SSL):
         file_name = SSL.null_pad(file_name)
 
         if self._track_exist(file_name):
-            raise SSLCrateError("File already exists in crate.")
+            log.info("File already exists in crate.")
+        else:
+            otrk = struct.pack(">L", len(file_name) + 8)
 
-        otrk = struct.pack(">L", len(file_name) + 8)
-
-        self.contents['tracks'].append({'otrk': otrk})
-        self.contents['tracks'][-1].update({'ptrk': file_name})
+            self.contents['tracks'].append({'otrk': otrk})
+            self.contents['tracks'][-1].update({'ptrk': file_name})
 
     def _track_exist(self, file_name):
         """ Returns position if track is already present in the given crate """
