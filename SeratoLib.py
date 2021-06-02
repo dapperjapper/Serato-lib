@@ -2,6 +2,7 @@ import mmap
 import struct
 import shutil
 import logging
+from os import path
 
 log = logging.getLogger(__name__)
 
@@ -71,10 +72,19 @@ class Crate(SSL):
         'tvcw' : '\x00\x00\x00\x02\x000', # column width
         }
 
-    def __init__(self, crate_file):
-        self.crate_file = crate_file
-        SSL.__init__(self)
-        self.contents = self._parse_crate()
+    def __init__(self, crate_file=None):
+        if crate_file == None:
+            self.crate_file = path.join(path.dirname(__file__), "template.crate")
+            SSL.__init__(self)
+            self.contents = self._parse_crate()
+            # Don't want to save over template
+            self.crate_file = None
+            # Remove existing tracks
+            self.contents['tracks'] = []
+        else:
+            self.crate_file = crate_file
+            SSL.__init__(self)
+            self.contents = self._parse_crate()
 
     def _parse_crate(self):
         """ steps through an SSL crate mmap object byte-by-byte, building a
