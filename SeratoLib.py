@@ -2,6 +2,7 @@ import mmap
 import struct
 import shutil
 import logging
+import unicodedata
 from os import path
 
 log = logging.getLogger(__name__)
@@ -62,7 +63,9 @@ class SSL(object):
 
     @staticmethod
     def null_pad(instr):
-        return "".join([ struct.pack("xc", i) for i in instr ])
+        # print(repr(instr))
+        # return "".join([ struct.pack("xc", i) for i in instr ])
+        return unicodedata.normalize('NFC', instr).encode('utf-16be')
 
 class Crate(SSL):
 
